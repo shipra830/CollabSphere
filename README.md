@@ -29,7 +29,7 @@ CollabSphere is a real-time full-stack web workspace application designed for se
 - Google Gemini API for AI features
 
 ---
-
+```text
 ## 📂 Project Structure
 
 CollabSphere/
@@ -47,7 +47,7 @@ CollabSphere/
     │   ├── App.jsx    # Main component
     │   └── main.jsx   # React entry point
     └── package.json
-
+```
 ---
 
 ## ⚙️ Getting Started & Installation
