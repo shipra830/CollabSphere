@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import WorkspaceChat from './WorkspaceChat';
+import API_URL from '../api'; // <-- Yeh line yahan add karni hai
 
 export default function Dashboard({ onLogout }) {
   const [workspaces, setWorkspaces] = useState([]);
@@ -19,9 +20,9 @@ export default function Dashboard({ onLogout }) {
       }
 
       try {
-        const res = await axios.get('http://localhost:5000/api/workspaces', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+       const res = await axios.get(`${API_URL}/api/workspaces`, {
+  headers: { Authorization: `Bearer ${token}` }
+});
         setWorkspaces(res.data);
       } catch (err) {
         console.error('Error fetching workspaces:', err);
@@ -42,10 +43,10 @@ export default function Dashboard({ onLogout }) {
     try {
       setLoading(true);
       const res = await axios.post(
-        'http://localhost:5000/api/workspaces',
-        { name: workspaceName, description: 'CollabSphere Team Workspace' },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  `${API_URL}/api/workspaces`,
+  { name: workspaceName, description: 'CollabSphere Team Workspace' },
+  { headers: { Authorization: `Bearer ${token}` } }
+);
 
       setWorkspaces([...workspaces, res.data]);
       setWorkspaceName('');

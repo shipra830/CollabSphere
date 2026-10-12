@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_URL from '../api';
 
 export default function Auth({ setToken }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,7 +17,7 @@ export default function Auth({ setToken }) {
 
     try {
       if (isLogin) {
-        const res = await axios.post('http://localhost:5000/api/auth/login', {
+        const res = await axios.post(`${API_URL}/api/auth/login`, {
           email,
           password
         });
@@ -27,7 +28,7 @@ export default function Auth({ setToken }) {
           setToken(res.data.token);
         }, 800);
       } else {
-        const res = await axios.post('http://localhost:5000/api/auth/register', {
+        const res = await axios.post(`${API_URL}/api/auth/register` , {
           username,
           email,
           password

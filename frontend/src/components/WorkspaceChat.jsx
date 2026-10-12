@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import axios from 'axios';
+import API_URL from '../api';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-const socket = io('http://localhost:5000');
+
+const socket = io(API_URL);
 
 const formatDiscordTime = (timestamp) => {
     if (!timestamp) return '';
@@ -59,9 +61,9 @@ export default function WorkspaceChat({ workspace, onBack }) {
       try {
         if (activeDMUser) {
           // Fetch Direct Messages
-          const response = await axios.get(`http://localhost:5000/api/dms/${activeDMUser._id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+         const response = await axios.get(`${API_URL}/api/dms/${activeDMUsr._id}`, {
+  headers: { Authorization: `Bearer ${token}` }
+});
           if (response.data) {
             const formattedDMs = response.data.map(msg => ({
               id: msg._id,
@@ -74,9 +76,9 @@ export default function WorkspaceChat({ workspace, onBack }) {
           }
         } else if (activeChannel && activeChannel._id) {
           // Fetch Channel Messages
-          const response = await axios.get(`http://localhost:5000/api/messages/${activeChannel._id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+        const response = await axios.get(`${API_URL}/api/messages/${activeChannel._id}`, {
+  headers: { Authorization: `Bearer ${token}` }
+});
           if (response.data) {
             const formattedMsgs = response.data.map(msg => ({
               id: msg._id,
@@ -103,7 +105,7 @@ export default function WorkspaceChat({ workspace, onBack }) {
     const fetchDatabaseTasks = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:5000/api/tasks?workspaceId=${wsId}`, {
+        const response = await axios.get(`${API_URL}/api/tasks?workspaceId=${wsId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.data) {
@@ -126,7 +128,7 @@ export default function WorkspaceChat({ workspace, onBack }) {
     const fetchChannels = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:5000/api/channels/${wsId}`, {
+        const response = await axios.get(`${API_URL}/api/channels/${wsId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.data && response.data.length > 0) {
@@ -145,7 +147,7 @@ export default function WorkspaceChat({ workspace, onBack }) {
     const fetchMembers = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:5000/api/workspaces/${wsId}/members`, {
+        const response = await axios.get(`${API_URL}/api/workspaces/${wsId}/members`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.data) {
@@ -213,7 +215,7 @@ export default function WorkspaceChat({ workspace, onBack }) {
 
       if (activeDMUser) {
         // Send Direct Message
-        const response = await axios.post('http://localhost:5000/api/dms', {
+        const response = await axios.post(`${API_URL}/api/dms`, {
           recipientId: activeDMUser._id,
           content: newMessage
         }, {
@@ -238,7 +240,7 @@ export default function WorkspaceChat({ workspace, onBack }) {
           formData.append('file', selectedFile);
         }
 
-        const response = await axios.post('http://localhost:5000/api/messages', formData, {
+        const response = await axios.post(`${API_URL}/api/messages`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -275,7 +277,7 @@ export default function WorkspaceChat({ workspace, onBack }) {
     if (!newTaskTitle.trim()) return;
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:5000/api/tasks', {
+      const response = await axios.post(`${API_URL}/api/tasks`, {
         title: newTaskTitle,
         workspaceId: wsId
       }, {
@@ -299,7 +301,7 @@ export default function WorkspaceChat({ workspace, onBack }) {
     }
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:5000/api/channels', {
+      const response = await axios.post(`${API_URL}/api/channels`, {
         name: newChannelName,
         workspaceId: wsId
       }, {
@@ -320,7 +322,7 @@ export default function WorkspaceChat({ workspace, onBack }) {
     if (!id) return;
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
+      await axios.delete(`${API_URL}/api/tasks/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setTasks(tasks.filter(t => t.id !== id));
@@ -334,7 +336,7 @@ export default function WorkspaceChat({ workspace, onBack }) {
       const token = localStorage.getItem('token');
       const taskToToggle = tasks.find(t => t.id === id);
       const newStatus = taskToToggle.status === 'Pending' ? 'Completed' : 'Pending';
-      await axios.patch(`http://localhost:5000/api/tasks/${id}/status`, { status: newStatus }, {
+      await axios.patch(`${API_URL}/api/tasks/${id}/status`, { status: newStatus }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setTasks(tasks.map(t => t.id === id ? { ...t, status: newStatus } : t));
@@ -456,7 +458,7 @@ export default function WorkspaceChat({ workspace, onBack }) {
 )}
                         {msg.fileUrl && (
                           <img 
-                            src={`http://localhost:5000/uploads/${msg.fileUrl.replace(/\\/g, '/').split('/').pop()}`} 
+                            src={`${API_URL}/uploads/${msg.fileUrl.replace(/\\/g, '/').split('/').pop()}`}
                             alt="attachment" 
                             className="max-w-[200px] max-h-[200px] rounded-lg mt-1 object-cover border border-gray-600" 
                           />
