@@ -1,12 +1,20 @@
 const Task = require('../models/Task');
 
 // Get tasks for a Workspace or Channel
+// Get tasks for a Workspace or Channel
 exports.getTasks = async (req, res) => {
     try {
         const { workspaceId, channelId } = req.query;
-        let filter = {};
-        if (workspaceId) filter.workspace = workspaceId;
-        if (channelId) filter.channel = channelId;
+
+        // Agar workspaceId nahi hai ya string "undefined" hai, toh crash hone ke bajaye empty array bhej do
+        if (!workspaceId || workspaceId === 'undefined') {
+            return res.status(200).json([]);
+        }
+
+        let filter = { workspace: workspaceId };
+        if (channelId && channelId !== 'undefined') {
+            filter.channel = channelId;
+        }
 
         const tasks = await Task.find(filter)
             .populate('assignedTo', 'username email')
